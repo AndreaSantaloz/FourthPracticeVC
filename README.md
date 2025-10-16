@@ -43,7 +43,7 @@ pip install ultralytics
 pip install lap
 ```
 
-Si no funcina con *lap*, probar
+Si no funcina con *lap*, proba
 
 ```
 pip install lapx
