@@ -1,4 +1,6 @@
-train: ./dataset/train/images
-val: ./dataset/val/images
-nc: 0
-names: []
+train: ./images
+val: ./images
+nc: 2
+names:
+- car
+- person
