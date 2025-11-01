@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 2
+names: ['0', '2']
+
+roboflow:
+  workspace: licenseplate-s6fjf
+  project: license-plate-xmnzu
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/licenseplate-s6fjf/license-plate-xmnzu/dataset/1
