@@ -2,7 +2,7 @@
 
 ###  Autores
 1. Andrea Santana López
-2. Luís Martín ...
+
 
 ## ¿Qué se va a desarrollar?
 En este entregable se va a desarrollar dos prácticas la primera consiste en un detector de matrículas utilizando YOLO y la segunda .....
