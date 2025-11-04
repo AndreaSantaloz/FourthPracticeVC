@@ -401,7 +401,7 @@ classes = {0: "Matricula", 1: "Coche"}
 CLASSES_TO_TRACK = list(classes.keys())
 ```
 
-El quinto lugar aún se está desarrollando pero es la comparación de los modelos y la explicación de cómo se ha implementado EasyOCR y Tesseract para encontrar los valores de la matrícula. También se pondrán tablas para demostrar la capacidad de ambos.
+El quinto lugar se esta realizando usando dos modelos para la detección de carácteres para las matrículas que son easyocr y tessercat
 
 Para el Tesseract es necesario, como se explicó en el apartado condiciones del proyecto, una instalación previa de las librerías para su realización. Una vez dicho esto, comencemos.
 
