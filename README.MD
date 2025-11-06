@@ -1,4 +1,4 @@
-# Prácticas Cuatro y Cinco
+# Práctica Cuatro
 
 ### Autores
 1. Andrea Santana López
