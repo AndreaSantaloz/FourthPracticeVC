@@ -516,10 +516,9 @@ Tras meter este fragmento del código de detección, mostraría un bounding box 
  
 |Característica	|EasyOCR	|Tesseract|
 |---------------|-----------|---------|
-|Tiempo de  Inferencia    |||
-|Tasa de Acierto - Texto General|||	
-|Tasa de Acierto - Texto Documentos|||	
-|Tasa de Acierto - Texto Natural/In-the-wild|||
+|Tiempo de  Inferencia    ||0.19|
+|Tasa de Acierto ||33 correctas/37 matriculas detectadas * 100% = 89%|	
+
 
 ## Tecnologías
 1. Python 
