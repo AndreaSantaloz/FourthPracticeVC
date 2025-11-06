@@ -510,6 +510,17 @@ if plate_text:
 
 Tras meter este fragmento del código de detección, mostraría un bounding box donde en lugar de poner "licenseplate" pone los caracteres de la matrícula.
 
+## Conclusiones
+
+### Tabla Comparativa
+ 
+|Característica	|EasyOCR	|Tesseract|
+|---------------|-----------|---------|
+|Tiempo de  Inferencia    |||
+|Tasa de Acierto - Texto General|||	
+|Tasa de Acierto - Texto Documentos|||	
+|Tasa de Acierto - Texto Natural/In-the-wild|||
+
 ## Tecnologías
 1. Python 
 2. YOLO
