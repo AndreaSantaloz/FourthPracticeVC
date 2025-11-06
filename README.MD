@@ -1,4 +1,4 @@
-# Práctica Cuatro
+# Prácticas Cuatro y Cinco
 
 ### Autores
 1. Andrea Santana López
@@ -516,9 +516,8 @@ Tras meter este fragmento del código de detección, mostraría un bounding box 
  
 |Característica	|EasyOCR	|Tesseract|
 |---------------|-----------|---------|
-|Tiempo de  Inferencia    ||0.19|
-|Tasa de Acierto ||33 correctas/37 matriculas detectadas * 100% = 89%|	
-
+|Tiempo de  Inferencia    |0.046|0.19|
+|Tasa de Acierto |40 correctas / 46 matriculas validas × 100% = 86.96%|33 correctas/37 matriculas validas * 100% = 89%|	
 
 ## Tecnologías
 1. Python 
