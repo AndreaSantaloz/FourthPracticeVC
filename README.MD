@@ -1,6 +1,6 @@
 # Prácticas Cuatro 
 
-### Autores
+## Autores
 1. Andrea Santana López
 
 ## ¿Qué se va a desarrollar?
@@ -41,11 +41,6 @@ Para Tesseract hay que ir a la página principal y descargar el archivo ejecutab
 pip install pytesseract
 ```
 
-Para PaddleOCR hay que ejecutar el siguiente comando:
-```sh
-pip install paddleocr
-```
-
 ## Controles del usuario
 Para parar el video puede usar la tecla ESC o se detendrá automáticamente.
 
@@ -64,6 +59,7 @@ from roboflow import Roboflow
 
 Segundo, empezamos con los apartados pedidos; en primer lugar detectamos personas y coches, por lo que primero definimos el modelo que vamos a usar que es YOLO11n y las clases en un diccionario donde las claves son 0 y 2 y en los valores ponemos a qué clase pertenecen, además declaramos el video que vamos a abrir.
 
+## Detección de personas y coches
 ```python
 model = YOLO("yolo11n.pt")
 classes = {0:"person", 2:"car"}
@@ -173,6 +169,8 @@ capture_video.release()
 cv2.destroyAllWindows()
 ```
 
+## Detector de matrículas  y coches
+
 En segundo lugar detectamos matrículas y coches, que es lo mismo que lo explicado anteriormente con personas y coches pero modificando unos parámetros.
 
 ```python
@@ -223,6 +221,7 @@ results = model.train(data=data_path, epochs=15, imgsz=640)
 
 Donde especificamos el modelo con el que vamos a entrenar que es YOLO11n, luego especificamos la ruta de los datos con data_path y, por último, en la variable results entrenamos el modelo con 15 épocas y dimensionando las imágenes a 640.
 
+## Seguimiento de personas y coches
 En tercer lugar tenemos el seguimiento de personas y coches, donde primero definimos el modelo que vamos a usar que es YOLO11n y las clases en un diccionario donde las claves son 0 y 2 y en los valores ponemos a qué clase pertenecen, además declaramos los IDs para trackear y el video que vamos a abrir. También hacemos un contador_clases_unicas donde inicializamos un diccionario para contar el total acumulado de objetos únicos que aparecen en el video por cada clase, también tracker_ids_contados donde inicializamos un conjunto (set) donde se almacenarán los IDs únicos de seguimiento ya contados para evitar duplicidades y establecemos el color del conteo en amarillo. Aparte inicializamos un diccionario para guardar las coordenadas históricas de cada objeto, indexadas por su ID de seguimiento al que llamamos track_history.
 
 ```python
@@ -391,6 +390,8 @@ print("\n--- RESUMEN FINAL DE CONTEO DE OBJETOS ÚNICOS ---")
 for nombre, cantidad in contador_clases_unicas.items():
     print(f"Total acumulado de objetos únicos ({nombre}) detectados: {cantidad}")
 ```
+
+## Seguimiento de matrículas y coches
 
 El cuarto lugar hemos hecho lo mismo que lo anterior pero cambiando los parámetros model, model_path, classes y classes_to_track:
 
