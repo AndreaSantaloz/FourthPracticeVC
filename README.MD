@@ -45,7 +45,7 @@ pip install pytesseract
 Para parar el video puede usar la tecla ESC o se detendrá automáticamente.
 
 ## Desarrollo
-Primero hay que importar las librerías para poder detectar y seguir las personas, coches y matrículas.
+Primero hay que importar las librerías para poder realizar las detecciones,seguimiento y las detecciones de modelos de OCR.
 
 ```python
 from ultralytics import YOLO
@@ -57,9 +57,11 @@ from collections import defaultdict
 from roboflow import Roboflow
 ```
 
-Segundo, empezamos con los apartados pedidos; en primer lugar detectamos personas y coches, por lo que primero definimos el modelo que vamos a usar que es YOLO11n y las clases en un diccionario donde las claves son 0 y 2 y en los valores ponemos a qué clase pertenecen, además declaramos el video que vamos a abrir.
 
 ## Detección de personas y coches
+
+Segundo, empezamos con los apartados pedidos; en primer lugar detectamos personas y coches, por lo que primero definimos el modelo que vamos a usar que es YOLO11n y las clases en un diccionario donde las claves son 0 y 2 y en los valores ponemos a qué clase pertenecen, además declaramos el video que vamos a abrir.
+
 ```python
 model = YOLO("yolo11n.pt")
 classes = {0:"person", 2:"car"}
