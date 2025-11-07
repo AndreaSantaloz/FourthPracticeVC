@@ -51,46 +51,6 @@ Se puede ver al entrar en el repositorio la carpeta information que es la docume
 Proyecto-Vision-Computadora/
 <br>
 
-│
-├── 📁 information/
-│   └── 📄 documentacion_profesorado.pdf
-│
-├── 📄 Dataset.txt
-├── 📄 README.md
-│
-└── 📁 Practica4/
-    │
-    ├── 📁 CSVs/
-    │   ├── 📊 deteccion_de_matricula_easyocr.csv
-    │   ├── 📊 deteccion_de_matricula_tesseract.csv
-    │   └── 📊 metricas_generales.csv
-    │
-    ├── 📁 MetricasModels/
-    │   └── 📜 calcular_metricas.py
-    │
-    ├── 📁 Models/
-    │   ├── 🤖 yolo11n.pt
-    │   └── 🤖 mejores_pesos/
-    │
-    ├── 📁 runs/
-    │   └── 📁 detect/
-    │       └── 📁 train/
-    │           └── 📁 weights/
-    │               └── 🏆 best.pt
-    │
-    ├── 📁 videos/
-    │   ├── 🎬 output_video_easyocr.mp4
-    │   ├── 🎬 output_video_tesseract.mp4
-    │   └── 🎬 videos_prueba/
-    │       ├── video1.mp4
-    │       ├── video2.mp4
-    │       └── ... (16 videos total)
-    │
-    └── 📓 Jupyter Notebooks/
-        ├── 🔍 Detección.ipynb
-        ├── 📝 ModelosOCR.ipynb
-        └── 🎯 Seguimiento.ipynb
-
 ## Desarrollo
 Primero hay que importar las librerías para poder realizar las detecciones,seguimiento y las detecciones de modelos de OCR.
 
