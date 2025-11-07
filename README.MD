@@ -3,6 +3,8 @@
 ## Autores
 1. Andrea Santana López
 
+
+
 ## ¿Qué se va a desarrollar?
 En este entregable se van a desarrollar dos prácticas: la primera consiste en un detector y seguimiento de personas,coches y matrículas utilizando YOLO  y la segunda parte utilizamos dos modelos el EasyOCR y el Tesseract para ver quien es mejor en cuanto a tiempo de inferencia y tasa de aciertos.
 
@@ -43,6 +45,49 @@ pip install pytesseract
 
 ## Controles del usuario
 Para parar el video puede usar la tecla ESC o se detendrá automáticamente.
+
+## Estructura de directorios
+Se puede ver al entrar en el repositorio la carpeta information que es la documentación dada por el profesorado,un txt llamado Dataset donde están los videos utilizados para probar los modelos que son como unos 16 videos y el conjunto de datos usados para entrenar un detector que se ha hecho para el proyecto,un readme con la información del proyecto,gráficas y demostraciones y ,por último,la carpeta Practica4 donde tenemos una serie de subcarpetas llamdas CSVs donde están los CSV generados,MetricasModels donde se ha realizado un script para calcular la tasa de aciertos y tiempo de inferencia de los modelos,Models donde estan modelos usados,runs donde esta el detector que se ha entrenado,videos donde se ha puesto los videos de salida de los modelos EASYOCR y Tesseract y los siguientes ficheros de extensión ipynb llamados Deteción donde se detecta personas y coches y coches y matrículas,ModelosOCR donde se hace las detecciones usando EASYOCR y Tesseract y Seguimiento que se hace el seguimiento de matrículas y coches y coches y personas.
+Proyecto-Vision-Computadora/
+│
+├── 📁 information/
+│   └── 📄 documentacion_profesorado.pdf
+│
+├── 📄 Dataset.txt
+├── 📄 README.md
+│
+└── 📁 Practica4/
+    │
+    ├── 📁 CSVs/
+    │   ├── 📊 deteccion_de_matricula_easyocr.csv
+    │   ├── 📊 deteccion_de_matricula_tesseract.csv
+    │   └── 📊 metricas_generales.csv
+    │
+    ├── 📁 MetricasModels/
+    │   └── 📜 calcular_metricas.py
+    │
+    ├── 📁 Models/
+    │   ├── 🤖 yolo11n.pt
+    │   └── 🤖 mejores_pesos/
+    │
+    ├── 📁 runs/
+    │   └── 📁 detect/
+    │       └── 📁 train/
+    │           └── 📁 weights/
+    │               └── 🏆 best.pt
+    │
+    ├── 📁 videos/
+    │   ├── 🎬 output_video_easyocr.mp4
+    │   ├── 🎬 output_video_tesseract.mp4
+    │   └── 🎬 videos_prueba/
+    │       ├── video1.mp4
+    │       ├── video2.mp4
+    │       └── ... (16 videos total)
+    │
+    └── 📓 Jupyter Notebooks/
+        ├── 🔍 Detección.ipynb
+        ├── 📝 ModelosOCR.ipynb
+        └── 🎯 Seguimiento.ipynb
 
 ## Desarrollo
 Primero hay que importar las librerías para poder realizar las detecciones,seguimiento y las detecciones de modelos de OCR.
@@ -464,6 +509,362 @@ Explicación de cada parámetro.
 |fourcc|El código de 4 caracteres que especifica el códec de video (en este caso, 'mp4v' para  MPEG-4)|
 |out_video|es el objeto principal que gestiona la escritura del video.|
 
+En séptimo lugar declaramos los datos necesarios para la creacion del CSV asociado al video donde 
+,se tiene el nombre y carpeta donde se almacenará y los encabezados del CSV.
+```python
+csv_filename = "./CSVs/deteccion_de_matricula_tesseract.csv"
+csv_header = [
+    "fotograma", "tipo_objeto", "confianza_deteccion",
+    "x1", "y1", "x2", "y2",
+    "matrícula_detectada", "x1_matrícula", "y1_matrícula", "x2_matrícula", "y2_matrícula",
+    "texto_matricula_ocr", "tiempo_inferencia_yolo", "tiempo_inferencia_tesseract"
+]
+```
+En octavo lugar se muestra el siguiente fragmento donde  se crea y prepara un archivo CSV para la escritura de datos
+```python
+with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
+    csv_writer = csv.writer(csvfile, delimiter=';')
+    csv_writer.writerow(csv_header)
+
+```
+En noveno lugar se muestra el siguiente fragmento donde se empieza a emitir el video y se va comprobando si el frame existe o no
+```python
+frame_count = 0
+    while True:
+        ret, frame_video = capture_video.read()
+        if not ret:
+            break
+        frame_count += 1
+
+```
+En decimo lugar se muestra parámetros para el cálculo del tiempo en yolo e inferencia.
+```python
+ start_time_yolo = time.perf_counter()
+        vehicle_results = model_coche(frame_video, stream=True, classes=[2, 3, 5, 7], conf=0.7)
+        end_time_yolo = time.perf_counter()
+        tiempo_inferencia_yolo = end_time_yolo - start_time_yolo
+        tiempos_inferencia_yolo.append(tiempo_inferencia_yolo)
+```
+En undecimo lugar se muestra el siguiente fragmento de código donde se realiza la detección de vehículos(coches) y matrículas leyendo los carácteres de cada matrícula que detecte.
+Aquí se deja explicado de forma breve lo que hace el siguiente código.
+El proceso comienza con la Iteración de Vehículos, donde el código recorre cada vehículo detectado en el fotograma actual. Para cada vehículo, se procede a la Detección de Matrícula, buscando específicamente la placa dentro del área delimitada del vehículo. Si se encuentra una matrícula, se realiza la Extracción OCR utilizando Tesseract para leer y limpiar el texto de la placa. Paralelamente, se realiza el Dibujo sobre el fotograma de video: se traza un rectángulo verde con el nombre sobre el vehículo, y un rectángulo rojo con el texto extraído sobre la matrícula. Finalmente, para el Registro y Guardado, el sistema recopila todos los datos obtenidos (información del vehículo, coordenadas, texto de la matrícula y tiempos de inferencia) y los guarda como filas en el archivo CSV. Con el fotograma ya actualizado con los dibujos, el paso final de Salida de Video escribe este fotograma en el archivo de video de salida (out_video).
+```python
+
+        frame_detections = []
+
+        # --- PROCESAR CADA VEHÍCULO DETECTADO ---
+        for result in vehicle_results:
+            for v in result.boxes:
+                class_id = int(v.cls[0])
+                class_name = model_coche.names[class_id]
+                confidence = float(v.conf[0])
+
+                x1, y1, x2, y2 = map(int, v.xyxy[0])
+                vehicle_roi = frame_video[y1:y2, x1:x2]
+
+                plate_text = ""
+                lp_x1_frame = lp_y1_frame = lp_x2_frame = lp_y2_frame = 0
+                tiempo_inferencia_tesseract = 0.0
+
+                # --- DETECCIÓN MATRÍCULA DENTRO DEL VEHÍCULO ---
+                if vehicle_roi.size > 0:
+                    plate_results = model_plate(vehicle_roi, stream=True)
+                    for p in plate_results:
+                        for box in p.boxes:
+                            px1, py1, px2, py2 = map(int, box.xyxy[0])
+                            
+                            # ROI de la matrícula relativo al vehículo
+                            plate_roi = vehicle_roi[py1:py2, px1:px2]
+
+                            # Coordenadas absolutas para dibujar sobre el frame completo
+                            lp_x1_frame, lp_y1_frame = x1 + px1, y1 + py1
+                            lp_x2_frame, lp_y2_frame = x1 + px2, y1 + py2
+
+                            if plate_roi.size > 0:
+                                start_time_tesseract = time.perf_counter()
+                                try:
+                                    # OCR usando Tesseract
+                                    plate_text_raw = pytesseract.image_to_string(
+                                        plate_roi,
+                                        config='--psm 8 --oem 3 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+                                    )
+                                    # Limpiar el texto
+                                    plate_text = re.sub(r'[^A-Z0-9]', '', plate_text_raw).strip()
+                                except Exception:
+                                    plate_text = "OCR_Error"
+                                end_time_tesseract = time.perf_counter()
+                                tiempo_inferencia_tesseract = end_time_tesseract - start_time_tesseract
+                                tiempos_inferencia_tesseract.append(tiempo_inferencia_tesseract)
+
+                                # Dibujar matrícula detectada
+                                if plate_text:
+                                    print(f"Matrícula detectada: {plate_text}")
+                                    cv2.rectangle(frame_video, (lp_x1_frame, lp_y1_frame), (lp_x2_frame, lp_y2_frame), (0, 0, 255), 2)
+                                    cv2.putText(frame_video, plate_text, (lp_x1_frame, lp_y1_frame - 10),
+                                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
+                # --- DIBUJAR VEHÍCULO ---
+                cv2.rectangle(frame_video, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(frame_video, f"{class_name} {confidence:.2f}", (x1, y1 - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
+                # --- INFORMACIÓN DE TIEMPOS ---
+                time_info = f"YOLO: {tiempo_inferencia_yolo:.3f}s"
+                if tiempo_inferencia_tesseract > 0:
+                    time_info += f" | OCR: {tiempo_inferencia_tesseract:.3f}s"
+                cv2.putText(frame_video, time_info, (10, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+                cv2.putText(frame_video, f"Frame: {frame_count}", (10, 60),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
+                # --- GUARDAR EN CSV ---
+                row_data = [
+                    frame_count, class_name, confidence,
+                    x1, y1, x2, y2,
+                    "SÍ" if plate_text else "NO",
+                    lp_x1_frame, lp_y1_frame, lp_x2_frame, lp_y2_frame,
+                    plate_text,
+                    f"{tiempo_inferencia_yolo:.6f}",
+                    f"{tiempo_inferencia_tesseract:.6f}"
+                ]
+                frame_detections.append(row_data)
+
+        # --- GUARDAR RESULTADOS DEL FRAME ---
+        if frame_detections:
+            csv_writer.writerows(frame_detections)
+            out_video.write(frame_video)
+```
+Por último hacemos las acciones de librerar el video de entrada y salida y mostrar unos mensajes de procesamiento finalizado.
+
+```python
+
+capture_video.release()
+out_video.release()
+print("\n✅ Procesamiento completado con Tesseract OCR.")
+print(f"📹 Video guardado como: output_video_tesseract.mp4")
+print(f"📄 CSV guardado como: {csv_filename}")
+
+```
+# EasyOCR
+
+Para el sistema de reconocimiento de matrículas con EasyOCR, como se explicó en el apartado de condiciones del proyecto, es necesaria una instalación previa de las librerías. Una vez dicho esto, comencemos.
+
+## Primer Paso: Importación de Librerías
+En primer lugar, como en todos los códigos del proyecto, importamos las librerías necesarias:
+
+```python
+import easyocr
+import cv2
+import time
+import csv
+from ultralytics import YOLO
+```
+
+## Segundo Paso: Configuración de Modelos
+Se han configurado dos detectores: YOLO11n.pt para vehículos y el detector entrenado (best.pt) para matrículas:
+
+```python
+model_coche = YOLO('yolo11n.pt')
+model_plate = YOLO('./runs/detect/train/weights/best.pt')
+```
+
+## Tercer Paso: Configuración de EasyOCR
+Se inicializa el lector OCR en español con aceleración por GPU:
+
+```python
+reader = easyocr.Reader(['es'], gpu=True)
+```
+
+## Cuarto Paso: Configuración del Video de Entrada
+Se declara el video de entrada para la detección de coches y matrículas:
+
+```python
+capture_video = cv2.VideoCapture("./videos/video5.mp4")
+```
+
+## Quinto Paso: Variables para Estadísticas
+Se declaran las variables para calcular los tiempos de inferencia de YOLO y EasyOCR:
+
+```python
+tiempos_inferencia_yolo = []
+tiempos_inferencia_easyocr = []
+```
+
+## Sexto Paso: Configuración del Video de Salida
+Se configuran los parámetros para el video de salida con las detecciones:
+
+```python
+frame_width = int(capture_video.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(capture_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = capture_video.get(cv2.CAP_PROP_FPS)
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+out_video = cv2.VideoWriter('./videos/output_video_easyocr.mp4', fourcc, fps, (frame_width, frame_height))
+```
+
+### Explicación de Parámetros de Video
+
+#### Lectura (Propiedades del video original)
+| Parámetro     | Uso |
+|---------------|-----|
+| frame_width   | El ancho del video en píxeles |
+| frame_height  | La altura del video en píxeles |
+| fps           | La cantidad de Fotogramas Por Segundo |
+
+#### Escritura (Configuración del Video de Salida)
+| Parámetro  | Uso |
+|------------|-----|
+| fourcc     | El código de 4 caracteres que especifica el códec de video (MPEG-4) |
+| out_video  | Objeto principal que gestiona la escritura del video |
+
+## Séptimo Paso: Configuración del Archivo CSV
+Se declaran los datos necesarios para la creación del CSV asociado al video:
+
+```python
+csv_filename = "./CSVs/deteccion_de_matricula_easyocr.csv"
+csv_header = [
+    "fotograma", "tipo_objeto", "confianza_deteccion",
+    "x1", "y1", "x2", "y2",
+    "matrícula_detectada", "x1_matrícula", "y1_matrícula", "x2_matrícula", "y2_matrícula",
+    "texto_matricula_ocr", "tiempo_inferencia_yolo", "tiempo_inferencia_easyocr"
+]
+```
+
+## Octavo Paso: Creación del Archivo CSV
+Se crea y prepara el archivo CSV para la escritura de datos:
+
+```python
+with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
+    csv_writer = csv.writer(csvfile, delimiter=';')
+    csv_writer.writerow(csv_header)
+```
+
+## Noveno Paso: Procesamiento del Video
+Se inicia la reproducción del video y se verifica la existencia de cada frame:
+
+```python
+    frame_count = 0
+    while True:
+        ret, frame_video = capture_video.read()
+        if not ret:
+            break
+        frame_count += 1
+```
+
+## Décimo Paso: Detección de Vehículos con YOLO
+Se realiza la detección de vehículos y se calcula el tiempo de inferencia:
+
+```python
+        start_time_yolo = time.perf_counter()
+        vehicle_results = model_coche(frame_video, stream=True, classes=[2, 3, 5, 7], conf=0.7)
+        end_time_yolo = time.perf_counter()
+        tiempo_inferencia_yolo = end_time_yolo - start_time_yolo
+        tiempos_inferencia_yolo.append(tiempo_inferencia_yolo)
+```
+
+## Undécimo Paso: Procesamiento de Detecciones
+El proceso completo de detección y reconocimiento se realiza de la siguiente manera:
+
+```python
+        frame_detections = []
+
+        # Recorremos detecciones
+        for result in vehicle_results:
+            for v in result.boxes:
+                class_id = int(v.cls[0])
+                class_name = model_coche.names[class_id]
+                confidence = float(v.conf[0])
+
+                x1, y1, x2, y2 = map(int, v.xyxy[0])
+                vehicle_roi = frame_video[y1:y2, x1:x2]
+
+                plate_text = ""
+                lp_x1 = lp_y1 = lp_x2 = lp_y2 = ""
+                tiempo_inferencia_easyocr = 0.0
+
+                # --- DETECCIÓN DE MATRÍCULA ---
+                if vehicle_roi.size > 0:
+                    plate_results = model_plate(vehicle_roi, stream=True)
+                    for p in plate_results:
+                        for box in p.boxes:
+                            px1, py1, px2, py2 = map(int, box.xyxy[0])
+                            lp_x1, lp_y1, lp_x2, lp_y2 = x1 + px1, y1 + py1, x1 + px2, y1 + py2
+                            plate_roi = frame_video[lp_y1:lp_y2, lp_x1:lp_x2]
+
+                            if plate_roi.size > 0:
+                                start_time_easyocr = time.perf_counter()
+                                ocr_result = reader.readtext(
+                                    plate_roi,
+                                    allowlist='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+                                    detail=0
+                                )
+                                end_time_easyocr = time.perf_counter()
+                                tiempo_inferencia_easyocr = end_time_easyocr - start_time_easyocr
+                                tiempos_inferencia_easyocr.append(tiempo_inferencia_easyocr)
+
+                                if ocr_result:
+                                    plate_text = "".join(ocr_result).replace(" ", "")
+                                    print(f"Matrícula detectada: {plate_text}")
+
+                                    cv2.rectangle(frame_video, (lp_x1, lp_y1), (lp_x2, lp_y2), (0, 0, 255), 2)
+                                    cv2.putText(frame_video, plate_text, (lp_x1, lp_y1 - 10),
+                                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
+                # Dibujar el vehículo
+                cv2.rectangle(frame_video, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(frame_video, f"{class_name} {confidence:.2f}", (x1, y1 - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
+                # Información de tiempos
+                time_info = f"YOLO: {tiempo_inferencia_yolo:.3f}s"
+                if tiempo_inferencia_easyocr > 0:
+                    time_info += f" | EasyOCR: {tiempo_inferencia_easyocr:.3f}s"
+                cv2.putText(frame_video, time_info, (10, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+                cv2.putText(frame_video, f"Frame: {frame_count}", (10, 60),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
+                # Guardar datos del frame
+                row_data = [
+                    frame_count, class_name, confidence,
+                    x1, y1, x2, y2,
+                    "SÍ" if plate_text else "NO",
+                    lp_x1, lp_y1, lp_x2, lp_y2,
+                    plate_text,
+                    f"{tiempo_inferencia_yolo:.6f}",
+                    f"{tiempo_inferencia_easyocr:.6f}"
+                ]
+                frame_detections.append(row_data)
+
+        # Guardar fuera del bucle interno
+        if frame_detections:
+            csv_writer.writerows(frame_detections)
+            out_video.write(frame_video)
+```
+
+### Explicación del Proceso de Detección
+
+El flujo de trabajo sigue estos pasos:
+
+1. **Iteración de Vehículos**: El código recorre cada vehículo detectado en el fotograma actual
+2. **Detección de Matrícula**: Para cada vehículo, se busca específicamente la placa dentro del área delimitada
+3. **Extracción OCR con EasyOCR**: Se utiliza EasyOCR para leer el texto de la matrícula, configurado para reconocer solo caracteres alfanuméricos
+4. **Dibujo sobre el Fotograma**: 
+   - Rectángulo verde con el nombre del vehículo detectado
+   - Rectángulo rojo con el texto extraído sobre la matrícula
+5. **Registro y Guardado**: Se recopilan todos los datos obtenidos y se guardan en el archivo CSV
+6. **Salida de Video**: El fotograma actualizado se escribe en el video de salida
+
+## Duodécimo Paso: Liberación de Recursos y Finalización
+Finalmente, se liberan los recursos de video y se muestran mensajes de confirmación:
+
+```python
+capture_video.release()
+out_video.release()
+
+print("\n✅ Procesamiento completado.")
+print(f"📹 Video guardado como: output_video_easyocr.mp4")
+print(f"📄 CSV guardado como: {csv_filename}")
+```
 
 
 ## Conclusiones
@@ -473,6 +874,7 @@ Explicación de cada parámetro.
 ![Tabla comparativa](./Practica4/MetricasModels/comparacion_matriculas_flexible.png)
 EasyOCR es la opción más rápida ya que procesa imágenes a 0.046s por fotograma lo que es aproximadamente tres veces más veloz que Tesseract que toma 0.154s sin embargo; Tesseract demuestra mayor precisión estricta ganando el 60.9% de las comparaciones por similitud flexible mientras que EasyOCR gana el 33.9% aunque ambos alcanzan el 100% de similitud máxima EasyOCR es más confiable para obtener una lectura decente con un 96.0% de aciertos por encima del 50% de similitud versus el 34.0% de Tesseract.
 
+## Demostraciones de los modelos EasyOCR y Tesseract
 
 ## Tecnologías
 1. Python 
@@ -484,6 +886,8 @@ EasyOCR es la opción más rápida ya que procesa imágenes a 0.046s por fotogra
 7. MATLAB
 8. Roboflow
 9. Math
+10. Seaborn
+11. Pandas
 
 ## Fuentes utilizadas
 1. [DataSet_Roboflow](https://universe.roboflow.com/licenseplate-s6fjf/license-plate-xmnzu/)
