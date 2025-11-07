@@ -514,10 +514,15 @@ Tras meter este fragmento del código de detección, mostraría un bounding box 
 
 ### Tabla Comparativa
  
-|Característica	|EasyOCR	|Tesseract|
-|---------------|-----------|---------|
-|Tiempo de  Inferencia    |0.046|0.19|
-|Tasa de Acierto |40 correctas / 46 matriculas validas × 100% = 86.96%|33 correctas/37 matriculas validas * 100% = 89%|	
+![Tabla comparativa](./comparacion_matriculas.png)
+
+El Modelo_EasyOCR superó al Modelo_Tesseract en la detección de matrículas, obteniendo la mayoría de las "victorias" (65.3%) por fotograma (máximo de caracteres detectados).
+
+EasyOCR también mostró una media y mediana superiores en la longitud del texto detectado.
+
+El valor máximo de caracteres detectados por EasyOCR (alrededor de 38) fue casi tres veces el de Tesseract (alrededor de 12), indicando que EasyOCR maneja mejor las detecciones de texto más largas.
+
+En conclusión: El Modelo_EasyOCR demuestra ser el más robusto y efectivo para la tarea de detección, especialmente en la captura de secuencias de caracteres de mayor longitud.
 
 ## Tecnologías
 1. Python 
