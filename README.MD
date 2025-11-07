@@ -49,6 +49,8 @@ Para parar el video puede usar la tecla ESC o se detendrá automáticamente.
 ## Estructura de directorios
 Se puede ver al entrar en el repositorio la carpeta information que es la documentación dada por el profesorado,un txt llamado Dataset donde están los videos utilizados para probar los modelos que son como unos 16 videos y el conjunto de datos usados para entrenar un detector que se ha hecho para el proyecto,un readme con la información del proyecto,gráficas y demostraciones y ,por último,la carpeta Practica4 donde tenemos una serie de subcarpetas llamdas CSVs donde están los CSV generados,MetricasModels donde se ha realizado un script para calcular la tasa de aciertos y tiempo de inferencia de los modelos,Models donde estan modelos usados,runs donde esta el detector que se ha entrenado,videos donde se ha puesto los videos de salida de los modelos EASYOCR y Tesseract y los siguientes ficheros de extensión ipynb llamados Deteción donde se detecta personas y coches y coches y matrículas,ModelosOCR donde se hace las detecciones usando EASYOCR y Tesseract y Seguimiento que se hace el seguimiento de matrículas y coches y coches y personas.
 Proyecto-Vision-Computadora/
+<br>
+
 │
 ├── 📁 information/
 │   └── 📄 documentacion_profesorado.pdf
