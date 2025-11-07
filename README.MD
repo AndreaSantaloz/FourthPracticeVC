@@ -406,112 +406,65 @@ CLASSES_TO_TRACK = list(classes.keys())
 
 El quinto lugar se esta realizando usando dos modelos para la detección de carácteres para las matrículas que son easyocr y tessercat
 
-Para el Tesseract es necesario, como se explicó en el apartado condiciones del proyecto, una instalación previa de las librerías para su realización. Una vez dicho esto, comencemos.
 
-En primer lugar hacemos como en todos los códigos del proyecto importar las librerías necesarias, en este apartado de código las dejo:
+## Tesseract
+Para el Tesseract es necesario, como se explicó en el apartado condiciones del proyecto, una instalación previa de las librerías para su realización. Una vez dicho esto, comencemos.
+En primer lugar hacemos como en todos los códigos del proyecto importar las librerías necesarias, en este apartado de código les dejo las necesarias:
 
 ```python
 import pytesseract
-from pytesseract import Output
 import cv2
-import math
+import time
+import csv
 from ultralytics import YOLO
+import numpy as np
+import re
 ```
-
-En segundo lugar declaramos una serie de variables importantes para la detección de caracteres de las matrículas:
-
+En segundo lugar se ha declarado la configuración del Tesseract ,que es el archivo ejecutable que se especifica en el apartado "Condiciones de la práctica" que es necesario 
+instalar donde  se verá en el siguiente fragmento de código.
 ```python
-tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract'
-pytesseract.pytesseract.tesseract_cmd = tesseract_cmd 
-model = YOLO("./runs/detect/train/weights/best.pt")
-classes = {0: "licenseplate", 1: "car"}
-capture_video = cv2.VideoCapture("video5.mp4")
+pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
 ```
-
-| Variables | Propósito |
-|-----------|-----------|
-| tesseract_cmd | Establece la ruta al ejecutable de Tesseract. Esto es necesario para que la librería pytesseract sepa dónde encontrar el motor de OCR. |
-| pytesseract.pytesseract.tesseract_cmd | Guardamos el motor OCR |
-| model | Declaramos el modelo que usamos para detección de matrículas y coches para que pueda leer las matrículas y sus caracteres |
-| classes | Es un diccionario donde declaramos las clases que vamos a detectar |
-| capture_video | Se trata del video de entrada donde detectamos las matrículas |
-
-En tercer lugar empezamos a hacer lo mismo que en los códigos de detección de objetos de antes como el de personas y coches o el de matrículas y coches, pero añadimos un fragmento de código después de identificar que es la clase matrícula.
-
+En tercer lugar para tener una mejor detección se ha decidido utilizar dos detectores el de YOLO11n.pt y el detector que se ha entrenado llamado best.pt los cuales hemos inicializado
+en el proyecto como model_coche y model_plate que dejamos en el siguiente fragmento de código.
 ```python
-if classes[cls] == "licenseplate":
-    license_plate_img = frame_video[y1:y2, x1:x2]
-    
-    ocr_config = r'--psm 8 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    
-    try:
-        plate_text = pytesseract.image_to_string(
-            license_plate_img, 
-            config=ocr_config
-        )
-        plate_text = plate_text.strip().replace(" ", "").replace("\n", "")
-    except pytesseract.TesseractNotFoundError:
-        plate_text = "Tesseract NO instalado!"
-    except Exception as e:
-        plate_text = f"Error OCR: {e}"
-
-    if plate_text:
-        print(f"Matrícula Detectada: {plate_text}")
-        
-        cv2.putText(
-            frame_video, 
-            plate_text, 
-            (x1, y1 - 20),
-            cv2.FONT_HERSHEY_SIMPLEX, 
-            1, 
-            (0, 255, 0), 
-            2
-        )
+model_coche = YOLO('yolo11n.pt')
+model_plate = YOLO('./runs/detect/train/weights/best.pt')
 ```
-
-Primero recortamos la imagen de la matrícula del cuadro original usando las coordenadas de la caja delimitadora:
+En cuarto lugar se declará el video de entrada para la detección de coches y matrículas para que 
+el Tesseract lea los carácteres donde se deja reflejado en el siguiente fragmento de código.
 ```python
-license_plate_img = frame_video[y1:y2, x1:x2]
+capture_video = cv2.VideoCapture("./videos/video5.mp4")
 ```
-
-Segundo definimos la configuración para Tesseract:
+En quinto lugar  se declará las estadísticas para calcular los tiempos de inferencias de yolo y tesseract donde se deja reflejado en el siguiente fragmento de código.
 ```python
-ocr_config = r'--psm 8 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+tiempos_inferencia_yolo = []
+tiempos_inferencia_tesseract = []
 ```
-
-Tercero creamos un bloque de try/except donde ejecutamos el Tesseract en la imagen recortada con la configuración definida y limpiamos el texto resultante (quita espacios en blanco y saltos de línea). Además realizamos manejo de excepciones como si Tesseract no está instalado (TesseractNotFoundError) o si ocurre otro error, se asigna un mensaje de error a plate_text.
-
+En sexto lugar se declará las variables necesarias para el video de salida con las detecciones de matrícula y coches ,además del texto correspondiente de la matrícula aquí se deja los parametros necesarios para ello inicializados.
 ```python
-try:
-    plate_text = pytesseract.image_to_string(
-        license_plate_img, 
-        config=ocr_config
-    )
-    plate_text = plate_text.strip().replace(" ", "").replace("\n", "")
-except pytesseract.TesseractNotFoundError:
-    plate_text = "Tesseract NO instalado!"
-except Exception as e:
-    plate_text = f"Error OCR: {e}"
+frame_width = int(capture_video.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(capture_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = capture_video.get(cv2.CAP_PROP_FPS)
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+out_video = cv2.VideoWriter('./videos/output_video_tesseract.mp4', fourcc, fps, (frame_width, frame_height))
 ```
+Explicación de cada parámetro.
 
-Por último, si se obtuvo un texto limpio, imprime la matrícula en consola y dibuja el texto de la matrícula justo encima de la caja delimitadora en el frame_video.
+## Lectura(Propiedades del video original) 
+|parámetro|Uso|
+|---------|---|
+|frame_width|El ancho del video en píxeles|
+|frame_height|La altura del video en píxeles|
+|fps|La cantidad de Fotogramas Por Segundo (Frames Per Second)|
 
-```python
-if plate_text:
-    print(f"Matrícula Detectada: {plate_text}")
-    
-    cv2.putText(
-        frame_video, 
-        plate_text, 
-        (x1, y1 - 20),
-        cv2.FONT_HERSHEY_SIMPLEX, 
-        1, 
-        (0, 255, 0), 
-        2
-    )
-```
+## Escritura (Configuración del Video de Salida)
+|parámetro|Uso|
+|---------|---|
+|fourcc|El código de 4 caracteres que especifica el códec de video (en este caso, 'mp4v' para  MPEG-4)|
+|out_video|es el objeto principal que gestiona la escritura del video.|
 
-Tras meter este fragmento del código de detección, mostraría un bounding box donde en lugar de poner "licenseplate" pone los caracteres de la matrícula.
+
 
 ## Conclusiones
 
