@@ -514,15 +514,9 @@ Tras meter este fragmento del código de detección, mostraría un bounding box 
 
 ### Tabla Comparativa
  
-![Tabla comparativa](./comparacion_matriculas.png)
+![Tabla comparativa](./Practica4/MetricasModels/comparacion_matriculas_flexible.png)
+EasyOCR es la opción más rápida ya que procesa imágenes a 0.046s por fotograma lo que es aproximadamente tres veces más veloz que Tesseract que toma 0.154s sin embargo; Tesseract demuestra mayor precisión estricta ganando el 60.9% de las comparaciones por similitud flexible mientras que EasyOCR gana el 33.9% aunque ambos alcanzan el 100% de similitud máxima EasyOCR es más confiable para obtener una lectura decente con un 96.0% de aciertos por encima del 50% de similitud versus el 34.0% de Tesseract.
 
-El Modelo_EasyOCR superó al Modelo_Tesseract en la detección de matrículas, obteniendo la mayoría de las "victorias" (65.3%) por fotograma (máximo de caracteres detectados).
-
-EasyOCR también mostró una media y mediana superiores en la longitud del texto detectado.
-
-El valor máximo de caracteres detectados por EasyOCR (alrededor de 38) fue casi tres veces el de Tesseract (alrededor de 12), indicando que EasyOCR maneja mejor las detecciones de texto más largas.
-
-En conclusión: El Modelo_EasyOCR demuestra ser el más robusto y efectivo para la tarea de detección, especialmente en la captura de secuencias de caracteres de mayor longitud.
 
 ## Tecnologías
 1. Python 
