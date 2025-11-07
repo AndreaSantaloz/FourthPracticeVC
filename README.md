@@ -847,6 +847,10 @@ EasyOCR es la opción más rápida ya que procesa imágenes a 0.046s por fotogra
     <p>Vídeo EasyOCR</p>
          <img width=30% src="https://github.com/user-attachments/assets/eb380264-28a2-4de5-96db-3398e7f779cb" />
      </div>
+     <div>
+    <p>Vídeo EasyOCR de Modesto</p>
+         <img width=30% src="./easy_ocr_modesto.gif" />
+     </div>
 
 
 </div>
