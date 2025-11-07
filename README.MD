@@ -1,10 +1,10 @@
-# Prácticas Cuatro y Cinco
+# Prácticas Cuatro 
 
 ### Autores
 1. Andrea Santana López
 
 ## ¿Qué se va a desarrollar?
-En este entregable se van a desarrollar dos prácticas: la primera consiste en un detector de matrículas utilizando YOLO y la segunda parte usaremos un conjunto de modelos propuestos (EasyOCR, Tesseract y PaddleOCR) y los compararemos con sus tiempos de inferencia y rendimiento para saber cuál es el mejor para la detección de matrículas.
+En este entregable se van a desarrollar dos prácticas: la primera consiste en un detector y seguimiento de personas,coches y matrículas utilizando YOLO  y la segunda parte utilizamos dos modelos el EasyOCR y el Tesseract para ver quien es mejor en cuanto a tiempo de inferencia y tasa de aciertos.
 
 ## Condiciones para las prácticas
 Para la primera práctica se tuvo que desarrollar un entorno nuevo en Anaconda utilizando la versión de Python 3.9.5 e instalar Ultralytics, que es un marco de IA que ofrece implementaciones abiertas de código abierto del algoritmo de detección de objetos YOLO (You Only Look Once) y un paquete llamado LAP (Linear Assignment Problem solver), que es un solucionador rápido para el problema de asignación lineal.
