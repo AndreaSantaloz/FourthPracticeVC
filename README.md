@@ -1,4 +1,4 @@
-# Prácticas Cuatro 
+# Práctica Cuatro 
 
 ## Autores
 1. Andrea Santana López
@@ -44,10 +44,10 @@ pip install pytesseract
 ```
 
 ## Controles del usuario
-Para parar el video puede usar la tecla ESC o se detendrá automáticamente.
+Para parar el vídeo puede usar la tecla ESC o se detendrá automáticamente.
 
 ## Estructura de directorios
-Se puede ver al entrar en el repositorio la carpeta information que es la documentación dada por el profesorado,un txt llamado Dataset donde están los videos utilizados para probar los modelos que son como unos 16 videos y el conjunto de datos usados para entrenar un detector que se ha hecho para el proyecto,un readme con la información del proyecto,gráficas y demostraciones y ,por último,la carpeta Practica4 donde tenemos una serie de subcarpetas llamdas CSVs donde están los CSV generados,MetricasModels donde se ha realizado un script para calcular la tasa de aciertos y tiempo de inferencia de los modelos,Models donde estan modelos usados,runs donde esta el detector que se ha entrenado,videos donde se ha puesto los videos de salida de los modelos EASYOCR y Tesseract y los siguientes ficheros de extensión ipynb llamados Deteción donde se detecta personas y coches y coches y matrículas,ModelosOCR donde se hace las detecciones usando EASYOCR y Tesseract y Seguimiento que se hace el seguimiento de matrículas y coches y coches y personas.
+Se puede ver al entrar en el repositorio la carpeta information que es la documentación dada por el profesorado,un txt llamado Dataset donde están los vídeos utilizados para probar los modelos que son como unos 16 vídeos y el conjunto de datos usados para entrenar un detector que se ha hecho para el proyecto,un readme con la información del proyecto,gráficas y demostraciones y ,por último,la carpeta Practica4 donde tenemos una serie de subcarpetas llamdas CSVs donde están los CSV generados,MetricasModels donde se ha realizado un script para calcular la tasa de aciertos y tiempo de inferencia de los modelos,Models donde estan modelos usados,runs donde esta el detector que se ha entrenado,vídeos donde se ha puesto los vídeos de salida de los modelos EASYOCR y Tesseract y los siguientes ficheros de extensión ipynb llamados Deteción donde se detecta personas y coches y coches y matrículas,ModelosOCR donde se hace las detecciones usando EASYOCR y Tesseract y Seguimiento que se hace el seguimiento de matrículas y coches y coches y personas.
 Proyecto-Vision-Computadora/
 <br>
 
@@ -67,28 +67,28 @@ from roboflow import Roboflow
 
 ## Detección de personas y coches
 
-Segundo, empezamos con los apartados pedidos; en primer lugar detectamos personas y coches, por lo que primero definimos el modelo que vamos a usar que es YOLO11n y las clases en un diccionario donde las claves son 0 y 2 y en los valores ponemos a qué clase pertenecen, además declaramos el video que vamos a abrir.
+Segundo, empezamos con los apartados pedidos; en primer lugar detectamos personas y coches, por lo que primero definimos el modelo que vamos a usar que es YOLO11n y las clases en un diccionario donde las claves son 0 y 2 y en los valores ponemos a qué clase pertenecen, además declaramos el vídeo que vamos a abrir.
 
 ```python
 model = YOLO("yolo11n.pt")
 classes = {0:"person", 2:"car"}
-capture_video = cv2.VideoCapture("video1.mp4")
+capture_Vídeo = cv2.VídeoCapture("Vídeo1.mp4")
 ```
 
-En segundo lugar realizamos un bucle while igual a True para recorrer los frames del video donde declaramos los parámetros ret y frame_video, donde si ret es True significa que ha detectado un frame del video y almacena el frame en el parámetro frame_video.
+En segundo lugar realizamos un bucle while igual a True para recorrer los frames del Vídeo donde declaramos los parámetros ret y frame_Vídeo, donde si ret es True significa que ha detectado un frame del Vídeo y almacena el frame en el parámetro frame_Vídeo.
 
 ```python
 while True:
-    ret, frame_video = capture_video.read()
+    ret, frame_Vídeo = capture_Vídeo.read()
 ```
 
 A partir de aquí viene el tercer paso que se trata de la detección de personas y coches donde se irá explicando paso por paso.
 
-El primer paso es generación de resultados y preparación donde se ejecuta el modelo de detección (donde stream=True implica que los resultados se generan en tiempo real o de forma eficiente) y como resultado se crea el generador de objetos llamado results, que contiene toda la información de detección para el fotograma de video analizado.
+El primer paso es generación de resultados y preparación donde se ejecuta el modelo de detección (donde stream=True implica que los resultados se generan en tiempo real o de forma eficiente) y como resultado se crea el generador de objetos llamado results, que contiene toda la información de detección para el fotograma de Vídeo analizado.
 
 ```python
 if ret:
-    results = model(frame_video, stream=True)
+    results = model(frame_Vídeo, stream=True)
 ```
 
 El segundo paso es iteración por fotograma y extracción de cajas donde se inicia un bucle (for frames in results:) que recorre los resultados de la detección para el fotograma actual y se extraen los datos de la caja delimitadora (boxes) del resultado del fotograma, que es una lista de todos los objetos identificados y como resultado se obtiene la colección de todos los cuadros (cajas) que rodean a los objetos detectados en el frame.
@@ -152,28 +152,28 @@ else:
         B = 0
 ```
 
-El séptimo paso y último para la detección de objetos en el video es dibujo en el video (OpenCV) donde una vez que se tienen las coordenadas de la caja (x1, y1, x2, y2) y el color (R, G, B), se utiliza la librería OpenCV (cv2) para pintar las detecciones en el frame del video.
+El séptimo paso y último para la detección de objetos en el Vídeo es dibujo en el Vídeo (OpenCV) donde una vez que se tienen las coordenadas de la caja (x1, y1, x2, y2) y el color (R, G, B), se utiliza la librería OpenCV (cv2) para pintar las detecciones en el frame del Vídeo.
 
 ```python
-cv2.rectangle(frame_video, (x1, y1), (x2, y2), (R, G, B), 3)
-cv2.putText(frame_video, classes[cls], [x1, y1], cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, B), 2)
+cv2.rectangle(frame_Vídeo, (x1, y1), (x2, y2), (R, G, B), 3)
+cv2.putText(frame_Vídeo, classes[cls], [x1, y1], cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, B), 2)
 ```
 
-Donde cada función hace su trabajo: en primer lugar tenemos que cv2.rectangle se encarga de crear la caja delimitadora donde le pasamos el frame_video, las coordenadas de la caja x1, y1, x2, y2, el color RGB de la clase que le corresponde y el grosor de las líneas que es 3. Con respecto a la función cv2.putText se encarga de las etiquetas donde etiqueta la caja delimitadora con la clase a la que corresponde el frame ya que le pasamos el frame del video, la clase que le corresponde usando classes[cls], aparte le pasamos las coordenadas x1 e y1 (una de las esquinas de la caja), la fuente en la que se escribirán los caracteres de la caja delimitadora, el tamaño de la fuente que usaremos que es 1, el color en el que se escribirán los caracteres de la etiqueta de la clase y por último el grosor de la fuente que le hemos establecido que es 2.
+Donde cada función hace su trabajo: en primer lugar tenemos que cv2.rectangle se encarga de crear la caja delimitadora donde le pasamos el frame_Vídeo, las coordenadas de la caja x1, y1, x2, y2, el color RGB de la clase que le corresponde y el grosor de las líneas que es 3. Con respecto a la función cv2.putText se encarga de las etiquetas donde etiqueta la caja delimitadora con la clase a la que corresponde el frame ya que le pasamos el frame del Vídeo, la clase que le corresponde usando classes[cls], aparte le pasamos las coordenadas x1 e y1 (una de las esquinas de la caja), la fuente en la que se escribirán los caracteres de la caja delimitadora, el tamaño de la fuente que usaremos que es 1, el color en el que se escribirán los caracteres de la etiqueta de la clase y por último el grosor de la fuente que le hemos establecido que es 2.
 
-El cuarto paso del código se trata del flujo del video donde la función imshow sigue mostrando el video al pasarle como parámetros el frame del video y una etiqueta de la ventana donde se sigue emitiéndose llamada "capture video" y un condicional de escape del video por si queremos cerrarlo tecleamos la tecla ESC.
+El cuarto paso del código se trata del flujo del Vídeo donde la función imshow sigue mostrando el Vídeo al pasarle como parámetros el frame del Vídeo y una etiqueta de la ventana donde se sigue emitiéndose llamada "capture Vídeo" y un condicional de escape del Vídeo por si queremos cerrarlo tecleamos la tecla ESC.
 
 ```python
-cv2.imshow('capture_video', frame_video)
+cv2.imshow('capture_Vídeo', frame_Vídeo)
 if cv2.waitKey(20) == 27:
     break
 ```
 
-El quinto paso y último del código es la liberación de recursos de la cámara y el cierre de todas las ventanas de OpenCV durante la ejecución para tener fluidez del video.
+El quinto paso y último del código es la liberación de recursos de la cámara y el cierre de todas las ventanas de OpenCV durante la ejecución para tener fluidez del Vídeo.
 
 ```python
 # Libera el objeto de captura
-capture_video.release()
+capture_Vídeo.release()
 # Destruye ventanas
 cv2.destroyAllWindows()
 ```
@@ -231,23 +231,23 @@ results = model.train(data=data_path, epochs=15, imgsz=640)
 Donde especificamos el modelo con el que vamos a entrenar que es YOLO11n, luego especificamos la ruta de los datos con data_path y, por último, en la variable results entrenamos el modelo con 15 épocas y dimensionando las imágenes a 640.
 
 ## Seguimiento de personas y coches
-En tercer lugar tenemos el seguimiento de personas y coches, donde primero definimos el modelo que vamos a usar que es YOLO11n y las clases en un diccionario donde las claves son 0 y 2 y en los valores ponemos a qué clase pertenecen, además declaramos los IDs para trackear y el video que vamos a abrir. También hacemos un contador_clases_unicas donde inicializamos un diccionario para contar el total acumulado de objetos únicos que aparecen en el video por cada clase, también tracker_ids_contados donde inicializamos un conjunto (set) donde se almacenarán los IDs únicos de seguimiento ya contados para evitar duplicidades y establecemos el color del conteo en amarillo. Aparte inicializamos un diccionario para guardar las coordenadas históricas de cada objeto, indexadas por su ID de seguimiento al que llamamos track_history.
+En tercer lugar tenemos el seguimiento de personas y coches, donde primero definimos el modelo que vamos a usar que es YOLO11n y las clases en un diccionario donde las claves son 0 y 2 y en los valores ponemos a qué clase pertenecen, además declaramos los IDs para trackear y el Vídeo que vamos a abrir. También hacemos un contador_clases_unicas donde inicializamos un diccionario para contar el total acumulado de objetos únicos que aparecen en el Vídeo por cada clase, también tracker_ids_contados donde inicializamos un conjunto (set) donde se almacenarán los IDs únicos de seguimiento ya contados para evitar duplicidades y establecemos el color del conteo en amarillo. Aparte inicializamos un diccionario para guardar las coordenadas históricas de cada objeto, indexadas por su ID de seguimiento al que llamamos track_history.
 
 ```python
 model = YOLO("yolo11n.pt")
 classes = {0: "person", 2: "car"}
 CLASSES_TO_TRACK = [0, 2] 
-vid = cv2.VideoCapture("video1.mp4")
+vid = cv2.VídeoCapture("Vídeo1.mp4")
 contador_clases_unicas = {nombre: 0 for nombre in classNames.values()}
 tracker_ids_contados = set()
 COLOR_TEXTO_CONTEO = (0, 255, 255)  # Amarillo brillante BGR
 ```
 
-En segundo lugar realizamos un bucle while igual a True para recorrer los frames del video donde declaramos los parámetros ret y frame_video, donde si ret es True significa que ha detectado un frame del video y almacena el frame en el parámetro frame_video.
+En segundo lugar realizamos un bucle while igual a True para recorrer los frames del Vídeo donde declaramos los parámetros ret y frame_Vídeo, donde si ret es True significa que ha detectado un frame del Vídeo y almacena el frame en el parámetro frame_Vídeo.
 
 ```python
 while True:
-    ret, frame_video = capture_video.read()
+    ret, frame_Vídeo = capture_Vídeo.read()
 ```
 
 A partir de aquí viene el tercer paso que se trata del seguimiento de personas y coches donde se irá explicando paso por paso.
@@ -339,14 +339,14 @@ else:
         B = 0
 ```
 
-El quinto paso y último para la detección de objetos en el video es dibujo en el video (OpenCV) donde una vez que se tienen las coordenadas de la caja (x1, y1, x2, y2) y el color (R, G, B), se utiliza la librería OpenCV (cv2) para pintar las detecciones en el frame del video.
+El quinto paso y último para la detección de objetos en el Vídeo es dibujo en el Vídeo (OpenCV) donde una vez que se tienen las coordenadas de la caja (x1, y1, x2, y2) y el color (R, G, B), se utiliza la librería OpenCV (cv2) para pintar las detecciones en el frame del Vídeo.
 
 ```python
-cv2.rectangle(frame_video, (x1, y1), (x2, y2), (R, G, B), 3)
-cv2.putText(frame_video, classes[cls], [x1, y1], cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, B), 2)
+cv2.rectangle(frame_Vídeo, (x1, y1), (x2, y2), (R, G, B), 3)
+cv2.putText(frame_Vídeo, classes[cls], [x1, y1], cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, B), 2)
 ```
 
-Donde cada función hace su trabajo: cv2.rectangle se encarga de crear la caja delimitadora donde le pasamos el frame_video, las coordenadas de la caja x1, y1, x2, y2, el color RGB de la clase que le corresponde y el grosor de las líneas que es 3. Con respecto a la función cv2.putText se encarga de las etiquetas donde etiqueta la caja delimitadora con la clase a la que corresponde el frame ya que le pasamos el frame del video, la clase que le corresponde usando classes[cls], aparte le pasamos las coordenadas x1 e y1 (una de las esquinas de la caja), la fuente en la que se escribirán los caracteres de la caja delimitadora, el tamaño de la fuente que usaremos que es 1, el color en el que se escribirán los caracteres de la etiqueta de la clase y por último el grosor de la fuente que le hemos establecido que es 2.
+Donde cada función hace su trabajo: cv2.rectangle se encarga de crear la caja delimitadora donde le pasamos el frame_Vídeo, las coordenadas de la caja x1, y1, x2, y2, el color RGB de la clase que le corresponde y el grosor de las líneas que es 3. Con respecto a la función cv2.putText se encarga de las etiquetas donde etiqueta la caja delimitadora con la clase a la que corresponde el frame ya que le pasamos el frame del Vídeo, la clase que le corresponde usando classes[cls], aparte le pasamos las coordenadas x1 e y1 (una de las esquinas de la caja), la fuente en la que se escribirán los caracteres de la caja delimitadora, el tamaño de la fuente que usaremos que es 1, el color en el que se escribirán los caracteres de la etiqueta de la clase y por último el grosor de la fuente que le hemos establecido que es 2.
 
 El sexto paso es cálculo y dibujo de trayectoria:
 
@@ -375,7 +375,7 @@ for nombre, cantidad in contador_clases_unicas.items():
 
 Donde el cv2.putText (Conteo): Dibuja en la pantalla el conteo final acumulado de objetos únicos que han pasado.
 
-El cuarto paso del código se trata del flujo del video donde la función imshow sigue mostrando el video al pasarle como parámetros el frame del video y una etiqueta de la ventana donde se sigue emitiéndose llamada "YOLO Tracking & Unique Count" y un condicional de escape del video por si queremos cerrarlo tecleamos la tecla ESC.
+El cuarto paso del código se trata del flujo del Vídeo donde la función imshow sigue mostrando el Vídeo al pasarle como parámetros el frame del Vídeo y una etiqueta de la ventana donde se sigue emitiéndose llamada "YOLO Tracking & Unique Count" y un condicional de escape del Vídeo por si queremos cerrarlo tecleamos la tecla ESC.
 
 ```python
 cv2.imshow('YOLO Tracking & Unique Count', img)
@@ -383,11 +383,11 @@ if cv2.waitKey(20) == 27:
     break
 ```
 
-El quinto paso y último del código es la liberación de recursos de la cámara y el cierre de todas las ventanas de OpenCV durante la ejecución para tener fluidez del video.
+El quinto paso y último del código es la liberación de recursos de la cámara y el cierre de todas las ventanas de OpenCV durante la ejecución para tener fluidez del Vídeo.
 
 ```python
 # Libera el objeto de captura
-capture_video.release()
+capture_Vídeo.release()
 # Destruye ventanas
 cv2.destroyAllWindows()
 ```
@@ -438,40 +438,40 @@ en el proyecto como model_coche y model_plate que dejamos en el siguiente fragme
 model_coche = YOLO('yolo11n.pt')
 model_plate = YOLO('./runs/detect/train/weights/best.pt')
 ```
-En cuarto lugar se declará el video de entrada para la detección de coches y matrículas para que 
+En cuarto lugar se declará el Vídeo de entrada para la detección de coches y matrículas para que 
 el Tesseract lea los carácteres donde se deja reflejado en el siguiente fragmento de código.
 ```python
-capture_video = cv2.VideoCapture("./videos/video5.mp4")
+capture_Vídeo = cv2.VídeoCapture("./Vídeos/Vídeo5.mp4")
 ```
 En quinto lugar  se declará las estadísticas para calcular los tiempos de inferencias de yolo y tesseract donde se deja reflejado en el siguiente fragmento de código.
 ```python
 tiempos_inferencia_yolo = []
 tiempos_inferencia_tesseract = []
 ```
-En sexto lugar se declará las variables necesarias para el video de salida con las detecciones de matrícula y coches ,además del texto correspondiente de la matrícula aquí se deja los parametros necesarios para ello inicializados.
+En sexto lugar se declará las variables necesarias para el Vídeo de salida con las detecciones de matrícula y coches ,además del texto correspondiente de la matrícula aquí se deja los parametros necesarios para ello inicializados.
 ```python
-frame_width = int(capture_video.get(cv2.CAP_PROP_FRAME_WIDTH))
-frame_height = int(capture_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-fps = capture_video.get(cv2.CAP_PROP_FPS)
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out_video = cv2.VideoWriter('./videos/output_video_tesseract.mp4', fourcc, fps, (frame_width, frame_height))
+frame_width = int(capture_Vídeo.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(capture_Vídeo.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = capture_Vídeo.get(cv2.CAP_PROP_FPS)
+fourcc = cv2.VídeoWriter_fourcc(*'mp4v')
+out_Vídeo = cv2.VídeoWriter('./Vídeos/output_Vídeo_tesseract.mp4', fourcc, fps, (frame_width, frame_height))
 ```
 Explicación de cada parámetro.
 
-## Lectura(Propiedades del video original) 
+## Lectura(Propiedades del Vídeo original) 
 |parámetro|Uso|
 |---------|---|
-|frame_width|El ancho del video en píxeles|
-|frame_height|La altura del video en píxeles|
+|frame_width|El ancho del Vídeo en píxeles|
+|frame_height|La altura del Vídeo en píxeles|
 |fps|La cantidad de Fotogramas Por Segundo (Frames Per Second)|
 
-## Escritura (Configuración del Video de Salida)
+## Escritura (Configuración del Vídeo de Salida)
 |parámetro|Uso|
 |---------|---|
-|fourcc|El código de 4 caracteres que especifica el códec de video (en este caso, 'mp4v' para  MPEG-4)|
-|out_video|es el objeto principal que gestiona la escritura del video.|
+|fourcc|El código de 4 caracteres que especifica el códec de Vídeo (en este caso, 'mp4v' para  MPEG-4)|
+|out_Vídeo|es el objeto principal que gestiona la escritura del Vídeo.|
 
-En séptimo lugar declaramos los datos necesarios para la creacion del CSV asociado al video donde 
+En séptimo lugar declaramos los datos necesarios para la creacion del CSV asociado al Vídeo donde 
 ,se tiene el nombre y carpeta donde se almacenará y los encabezados del CSV.
 ```python
 csv_filename = "./CSVs/deteccion_de_matricula_tesseract.csv"
@@ -489,11 +489,11 @@ with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
     csv_writer.writerow(csv_header)
 
 ```
-En noveno lugar se muestra el siguiente fragmento donde se empieza a emitir el video y se va comprobando si el frame existe o no
+En noveno lugar se muestra el siguiente fragmento donde se empieza a emitir el Vídeo y se va comprobando si el frame existe o no
 ```python
 frame_count = 0
     while True:
-        ret, frame_video = capture_video.read()
+        ret, frame_Vídeo = capture_Vídeo.read()
         if not ret:
             break
         frame_count += 1
@@ -502,14 +502,14 @@ frame_count = 0
 En decimo lugar se muestra parámetros para el cálculo del tiempo en yolo e inferencia.
 ```python
  start_time_yolo = time.perf_counter()
-        vehicle_results = model_coche(frame_video, stream=True, classes=[2, 3, 5, 7], conf=0.7)
+        vehicle_results = model_coche(frame_Vídeo, stream=True, classes=[2, 3, 5, 7], conf=0.7)
         end_time_yolo = time.perf_counter()
         tiempo_inferencia_yolo = end_time_yolo - start_time_yolo
         tiempos_inferencia_yolo.append(tiempo_inferencia_yolo)
 ```
 En undecimo lugar se muestra el siguiente fragmento de código donde se realiza la detección de vehículos(coches) y matrículas leyendo los carácteres de cada matrícula que detecte.
 Aquí se deja explicado de forma breve lo que hace el siguiente código.
-El proceso comienza con la Iteración de Vehículos, donde el código recorre cada vehículo detectado en el fotograma actual. Para cada vehículo, se procede a la Detección de Matrícula, buscando específicamente la placa dentro del área delimitada del vehículo. Si se encuentra una matrícula, se realiza la Extracción OCR utilizando Tesseract para leer y limpiar el texto de la placa. Paralelamente, se realiza el Dibujo sobre el fotograma de video: se traza un rectángulo verde con el nombre sobre el vehículo, y un rectángulo rojo con el texto extraído sobre la matrícula. Finalmente, para el Registro y Guardado, el sistema recopila todos los datos obtenidos (información del vehículo, coordenadas, texto de la matrícula y tiempos de inferencia) y los guarda como filas en el archivo CSV. Con el fotograma ya actualizado con los dibujos, el paso final de Salida de Video escribe este fotograma en el archivo de video de salida (out_video).
+El proceso comienza con la Iteración de Vehículos, donde el código recorre cada vehículo detectado en el fotograma actual. Para cada vehículo, se procede a la Detección de Matrícula, buscando específicamente la placa dentro del área delimitada del vehículo. Si se encuentra una matrícula, se realiza la Extracción OCR utilizando Tesseract para leer y limpiar el texto de la placa. Paralelamente, se realiza el Dibujo sobre el fotograma de Vídeo: se traza un rectángulo verde con el nombre sobre el vehículo, y un rectángulo rojo con el texto extraído sobre la matrícula. Finalmente, para el Registro y Guardado, el sistema recopila todos los datos obtenidos (información del vehículo, coordenadas, texto de la matrícula y tiempos de inferencia) y los guarda como filas en el archivo CSV. Con el fotograma ya actualizado con los dibujos, el paso final de Salida de Vídeo escribe este fotograma en el archivo de Vídeo de salida (out_Vídeo).
 ```python
 
         frame_detections = []
@@ -522,7 +522,7 @@ El proceso comienza con la Iteración de Vehículos, donde el código recorre ca
                 confidence = float(v.conf[0])
 
                 x1, y1, x2, y2 = map(int, v.xyxy[0])
-                vehicle_roi = frame_video[y1:y2, x1:x2]
+                vehicle_roi = frame_Vídeo[y1:y2, x1:x2]
 
                 plate_text = ""
                 lp_x1_frame = lp_y1_frame = lp_x2_frame = lp_y2_frame = 0
@@ -561,22 +561,22 @@ El proceso comienza con la Iteración de Vehículos, donde el código recorre ca
                                 # Dibujar matrícula detectada
                                 if plate_text:
                                     print(f"Matrícula detectada: {plate_text}")
-                                    cv2.rectangle(frame_video, (lp_x1_frame, lp_y1_frame), (lp_x2_frame, lp_y2_frame), (0, 0, 255), 2)
-                                    cv2.putText(frame_video, plate_text, (lp_x1_frame, lp_y1_frame - 10),
+                                    cv2.rectangle(frame_Vídeo, (lp_x1_frame, lp_y1_frame), (lp_x2_frame, lp_y2_frame), (0, 0, 255), 2)
+                                    cv2.putText(frame_Vídeo, plate_text, (lp_x1_frame, lp_y1_frame - 10),
                                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
 
                 # --- DIBUJAR VEHÍCULO ---
-                cv2.rectangle(frame_video, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame_video, f"{class_name} {confidence:.2f}", (x1, y1 - 10),
+                cv2.rectangle(frame_Vídeo, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(frame_Vídeo, f"{class_name} {confidence:.2f}", (x1, y1 - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
                 # --- INFORMACIÓN DE TIEMPOS ---
                 time_info = f"YOLO: {tiempo_inferencia_yolo:.3f}s"
                 if tiempo_inferencia_tesseract > 0:
                     time_info += f" | OCR: {tiempo_inferencia_tesseract:.3f}s"
-                cv2.putText(frame_video, time_info, (10, 30),
+                cv2.putText(frame_Vídeo, time_info, (10, 30),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-                cv2.putText(frame_video, f"Frame: {frame_count}", (10, 60),
+                cv2.putText(frame_Vídeo, f"Frame: {frame_count}", (10, 60),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
                 # --- GUARDAR EN CSV ---
@@ -594,16 +594,16 @@ El proceso comienza con la Iteración de Vehículos, donde el código recorre ca
         # --- GUARDAR RESULTADOS DEL FRAME ---
         if frame_detections:
             csv_writer.writerows(frame_detections)
-            out_video.write(frame_video)
+            out_Vídeo.write(frame_Vídeo)
 ```
-Por último hacemos las acciones de librerar el video de entrada y salida y mostrar unos mensajes de procesamiento finalizado.
+Por último hacemos las acciones de librerar el Vídeo de entrada y salida y mostrar unos mensajes de procesamiento finalizado.
 
 ```python
 
-capture_video.release()
-out_video.release()
+capture_Vídeo.release()
+out_Vídeo.release()
 print("\n✅ Procesamiento completado con Tesseract OCR.")
-print(f"📹 Video guardado como: output_video_tesseract.mp4")
+print(f"📹 Vídeo guardado como: output_Vídeo_tesseract.mp4")
 print(f"📄 CSV guardado como: {csv_filename}")
 
 ```
@@ -637,11 +637,11 @@ Se inicializa el lector OCR en español con aceleración por GPU:
 reader = easyocr.Reader(['es'], gpu=True)
 ```
 
-## Cuarto Paso: Configuración del Video de Entrada
-Se declara el video de entrada para la detección de coches y matrículas:
+## Cuarto Paso: Configuración del Vídeo de Entrada
+Se declara el Vídeo de entrada para la detección de coches y matrículas:
 
 ```python
-capture_video = cv2.VideoCapture("./videos/video5.mp4")
+capture_Vídeo = cv2.VídeoCapture("./Vídeos/Vídeo5.mp4")
 ```
 
 ## Quinto Paso: Variables para Estadísticas
@@ -652,34 +652,34 @@ tiempos_inferencia_yolo = []
 tiempos_inferencia_easyocr = []
 ```
 
-## Sexto Paso: Configuración del Video de Salida
-Se configuran los parámetros para el video de salida con las detecciones:
+## Sexto Paso: Configuración del Vídeo de Salida
+Se configuran los parámetros para el Vídeo de salida con las detecciones:
 
 ```python
-frame_width = int(capture_video.get(cv2.CAP_PROP_FRAME_WIDTH))
-frame_height = int(capture_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-fps = capture_video.get(cv2.CAP_PROP_FPS)
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out_video = cv2.VideoWriter('./videos/output_video_easyocr.mp4', fourcc, fps, (frame_width, frame_height))
+frame_width = int(capture_Vídeo.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(capture_Vídeo.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = capture_Vídeo.get(cv2.CAP_PROP_FPS)
+fourcc = cv2.VídeoWriter_fourcc(*'mp4v')
+out_Vídeo = cv2.VídeoWriter('./Vídeos/output_Vídeo_easyocr.mp4', fourcc, fps, (frame_width, frame_height))
 ```
 
-### Explicación de Parámetros de Video
+### Explicación de Parámetros de Vídeo
 
-#### Lectura (Propiedades del video original)
+#### Lectura (Propiedades del Vídeo original)
 | Parámetro     | Uso |
 |---------------|-----|
-| frame_width   | El ancho del video en píxeles |
-| frame_height  | La altura del video en píxeles |
+| frame_width   | El ancho del Vídeo en píxeles |
+| frame_height  | La altura del Vídeo en píxeles |
 | fps           | La cantidad de Fotogramas Por Segundo |
 
-#### Escritura (Configuración del Video de Salida)
+#### Escritura (Configuración del Vídeo de Salida)
 | Parámetro  | Uso |
 |------------|-----|
-| fourcc     | El código de 4 caracteres que especifica el códec de video (MPEG-4) |
-| out_video  | Objeto principal que gestiona la escritura del video |
+| fourcc     | El código de 4 caracteres que especifica el códec de Vídeo (MPEG-4) |
+| out_Vídeo  | Objeto principal que gestiona la escritura del Vídeo |
 
 ## Séptimo Paso: Configuración del Archivo CSV
-Se declaran los datos necesarios para la creación del CSV asociado al video:
+Se declaran los datos necesarios para la creación del CSV asociado al Vídeo:
 
 ```python
 csv_filename = "./CSVs/deteccion_de_matricula_easyocr.csv"
@@ -700,13 +700,13 @@ with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
     csv_writer.writerow(csv_header)
 ```
 
-## Noveno Paso: Procesamiento del Video
-Se inicia la reproducción del video y se verifica la existencia de cada frame:
+## Noveno Paso: Procesamiento del Vídeo
+Se inicia la reproducción del Vídeo y se verifica la existencia de cada frame:
 
 ```python
     frame_count = 0
     while True:
-        ret, frame_video = capture_video.read()
+        ret, frame_Vídeo = capture_Vídeo.read()
         if not ret:
             break
         frame_count += 1
@@ -717,7 +717,7 @@ Se realiza la detección de vehículos y se calcula el tiempo de inferencia:
 
 ```python
         start_time_yolo = time.perf_counter()
-        vehicle_results = model_coche(frame_video, stream=True, classes=[2, 3, 5, 7], conf=0.7)
+        vehicle_results = model_coche(frame_Vídeo, stream=True, classes=[2, 3, 5, 7], conf=0.7)
         end_time_yolo = time.perf_counter()
         tiempo_inferencia_yolo = end_time_yolo - start_time_yolo
         tiempos_inferencia_yolo.append(tiempo_inferencia_yolo)
@@ -737,7 +737,7 @@ El proceso completo de detección y reconocimiento se realiza de la siguiente ma
                 confidence = float(v.conf[0])
 
                 x1, y1, x2, y2 = map(int, v.xyxy[0])
-                vehicle_roi = frame_video[y1:y2, x1:x2]
+                vehicle_roi = frame_Vídeo[y1:y2, x1:x2]
 
                 plate_text = ""
                 lp_x1 = lp_y1 = lp_x2 = lp_y2 = ""
@@ -750,7 +750,7 @@ El proceso completo de detección y reconocimiento se realiza de la siguiente ma
                         for box in p.boxes:
                             px1, py1, px2, py2 = map(int, box.xyxy[0])
                             lp_x1, lp_y1, lp_x2, lp_y2 = x1 + px1, y1 + py1, x1 + px2, y1 + py2
-                            plate_roi = frame_video[lp_y1:lp_y2, lp_x1:lp_x2]
+                            plate_roi = frame_Vídeo[lp_y1:lp_y2, lp_x1:lp_x2]
 
                             if plate_roi.size > 0:
                                 start_time_easyocr = time.perf_counter()
@@ -767,22 +767,22 @@ El proceso completo de detección y reconocimiento se realiza de la siguiente ma
                                     plate_text = "".join(ocr_result).replace(" ", "")
                                     print(f"Matrícula detectada: {plate_text}")
 
-                                    cv2.rectangle(frame_video, (lp_x1, lp_y1), (lp_x2, lp_y2), (0, 0, 255), 2)
-                                    cv2.putText(frame_video, plate_text, (lp_x1, lp_y1 - 10),
+                                    cv2.rectangle(frame_Vídeo, (lp_x1, lp_y1), (lp_x2, lp_y2), (0, 0, 255), 2)
+                                    cv2.putText(frame_Vídeo, plate_text, (lp_x1, lp_y1 - 10),
                                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
 
                 # Dibujar el vehículo
-                cv2.rectangle(frame_video, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame_video, f"{class_name} {confidence:.2f}", (x1, y1 - 10),
+                cv2.rectangle(frame_Vídeo, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(frame_Vídeo, f"{class_name} {confidence:.2f}", (x1, y1 - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
                 # Información de tiempos
                 time_info = f"YOLO: {tiempo_inferencia_yolo:.3f}s"
                 if tiempo_inferencia_easyocr > 0:
                     time_info += f" | EasyOCR: {tiempo_inferencia_easyocr:.3f}s"
-                cv2.putText(frame_video, time_info, (10, 30),
+                cv2.putText(frame_Vídeo, time_info, (10, 30),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-                cv2.putText(frame_video, f"Frame: {frame_count}", (10, 60),
+                cv2.putText(frame_Vídeo, f"Frame: {frame_count}", (10, 60),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
                 # Guardar datos del frame
@@ -800,7 +800,7 @@ El proceso completo de detección y reconocimiento se realiza de la siguiente ma
         # Guardar fuera del bucle interno
         if frame_detections:
             csv_writer.writerows(frame_detections)
-            out_video.write(frame_video)
+            out_Vídeo.write(frame_Vídeo)
 ```
 
 ### Explicación del Proceso de Detección
@@ -814,17 +814,17 @@ El flujo de trabajo sigue estos pasos:
    - Rectángulo verde con el nombre del vehículo detectado
    - Rectángulo rojo con el texto extraído sobre la matrícula
 5. **Registro y Guardado**: Se recopilan todos los datos obtenidos y se guardan en el archivo CSV
-6. **Salida de Video**: El fotograma actualizado se escribe en el video de salida
+6. **Salida de Vídeo**: El fotograma actualizado se escribe en el Vídeo de salida
 
 ## Duodécimo Paso: Liberación de Recursos y Finalización
-Finalmente, se liberan los recursos de video y se muestran mensajes de confirmación:
+Finalmente, se liberan los recursos de Vídeo y se muestran mensajes de confirmación:
 
 ```python
-capture_video.release()
-out_video.release()
+capture_Vídeo.release()
+out_Vídeo.release()
 
 print("\n✅ Procesamiento completado.")
-print(f"📹 Video guardado como: output_video_easyocr.mp4")
+print(f"📹 Vídeo guardado como: output_Vídeo_easyocr.mp4")
 print(f"📄 CSV guardado como: {csv_filename}")
 ```
 
@@ -837,6 +837,23 @@ print(f"📄 CSV guardado como: {csv_filename}")
 EasyOCR es la opción más rápida ya que procesa imágenes a 0.046s por fotograma lo que es aproximadamente tres veces más veloz que Tesseract que toma 0.154s sin embargo; Tesseract demuestra mayor precisión estricta ganando el 60.9% de las comparaciones por similitud flexible mientras que EasyOCR gana el 33.9% aunque ambos alcanzan el 100% de similitud máxima EasyOCR es más confiable para obtener una lectura decente con un 96.0% de aciertos por encima del 50% de similitud versus el 34.0% de Tesseract.
 
 ## Demostraciones de los modelos EasyOCR y Tesseract
+
+<div>
+    <div>
+    <p>Vídeo Teserract</p>
+    <img width=30% src="https://github.com/user-attachments/assets/fefe8deb-f2fd-48b7-ba3d-c3deb44a9552"/>
+    </div>
+     <div>
+    <p>Vídeo EasyOCR</p>
+         <img width=30% src="https://github.com/user-attachments/assets/eb380264-28a2-4de5-96db-3398e7f779cb" />
+     </div>
+
+
+</div>
+
+
+
+
 
 ## Tecnologías
 1. Python 
@@ -858,4 +875,4 @@ EasyOCR es la opción más rápida ya que procesa imágenes a 0.046s por fotogra
 4. [Documentación del profesor 4b](https://github.com/otsedom/otsedom.github.io/tree/main/VC/P4b)
 5. [YOLO](https://docs.ultralytics.com/es/)
 6. [EasyOCR](https://blog.roboflow.com/how-to-use-easyocr/)
-7. [Creación de videos](https://docs.opencv.org/4.x/dd/d9e/classcv_1_1VideoWriter.html)
+7. [Creación de Vídeos](https://docs.opencv.org/4.x/dd/d9e/classcv_1_1VídeoWriter.html)
